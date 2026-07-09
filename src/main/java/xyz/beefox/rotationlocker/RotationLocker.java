@@ -53,14 +53,14 @@ public class RotationLocker implements ModInitializer {
 							enableKey = false;
 							if(lockDirection == null){
 								lockDirection = Direction.orderedByNearest(client.player)[0];
-								client.player.displayClientMessage(Component.translatable("text.rotationlocker.lock", lockDirection.getSerializedName()).withStyle(ChatFormatting.WHITE), false);
+								client.player.sendSystemMessage(Component.translatable("text.rotationlocker.lock", lockDirection.getSerializedName()).withStyle(ChatFormatting.WHITE));
 							} else {
 								if(client.options.keyShift.isDown()){
 									lockDirection = lockDirection.getOpposite();
-									client.player.displayClientMessage(Component.translatable("text.rotationlocker.flip", lockDirection.getSerializedName()).withStyle(ChatFormatting.GRAY), false);
+									client.player.sendSystemMessage(Component.translatable("text.rotationlocker.flip", lockDirection.getSerializedName()).withStyle(ChatFormatting.GRAY));
 								} else {
 									lockDirection = null;
-									client.player.displayClientMessage(Component.translatable("text.rotationlocker.unlock").withStyle(ChatFormatting.WHITE), false);
+									client.player.sendSystemMessage(Component.translatable("text.rotationlocker.unlock").withStyle(ChatFormatting.WHITE));
 								}
 							}
 						}
@@ -72,13 +72,13 @@ public class RotationLocker implements ModInitializer {
 
 						if(player != null) {
 
-							if(lockDirection == Direction.UP && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getItemHolder()))) {
+							if(lockDirection == Direction.UP && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getItem().builtInRegistryHolder()))) {
 								lockDirection = null;
-								client.player.displayClientMessage(Component.translatable("text.rotationlocker.invalidlock").withStyle(ChatFormatting.DARK_RED), false);
+								client.player.sendSystemMessage(Component.translatable("text.rotationlocker.invalidlock").withStyle(ChatFormatting.DARK_RED));
 							}
-							if(lockDirection == Direction.DOWN && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getItemHolder()))) {
+							if(lockDirection == Direction.DOWN && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getItem().builtInRegistryHolder()))) {
 								lockDirection = null;
-								client.player.displayClientMessage(Component.translatable("text.rotationlocker.invalidlock").withStyle(ChatFormatting.DARK_RED), false);
+								client.player.sendSystemMessage(Component.translatable("text.rotationlocker.invalidlock").withStyle(ChatFormatting.DARK_RED));
 							}
 						}
 					}
