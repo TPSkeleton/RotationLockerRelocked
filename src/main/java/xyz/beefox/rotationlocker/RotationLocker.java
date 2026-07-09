@@ -48,41 +48,41 @@ public class RotationLocker implements ModInitializer {
 
 		enableKey = true;
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if(client.player != null) {
-				if (rotationLockKeyBinding.isPressed() && enableKey == true) {
-					enableKey = false;
-					if(lockDirection == null){
-						lockDirection = Direction.getEntityFacingOrder(client.player)[0];
-						client.player.sendMessage(Text.translatable("text.rotationlocker.lock", lockDirection.asString()).formatted(Formatting.WHITE), false);
-					} else {
-						if(client.options.sneakKey.isPressed()){
-							lockDirection = lockDirection.getOpposite();
-							client.player.sendMessage(Text.translatable("text.rotationlocker.flip", lockDirection.asString()).formatted(Formatting.GRAY), false);
-						} else {
-							lockDirection = null;
-							client.player.sendMessage(Text.translatable("text.rotationlocker.unlock").formatted(Formatting.WHITE), false);
+					if(client.player != null) {
+						if (rotationLockKeyBinding.isPressed() && enableKey == true) {
+							enableKey = false;
+							if(lockDirection == null){
+								lockDirection = Direction.getEntityFacingOrder(client.player)[0];
+								client.player.sendMessage(Text.translatable("text.rotationlocker.lock", lockDirection.asString()).formatted(Formatting.WHITE), false);
+							} else {
+								if(client.options.sneakKey.isPressed()){
+									lockDirection = lockDirection.getOpposite();
+									client.player.sendMessage(Text.translatable("text.rotationlocker.flip", lockDirection.asString()).formatted(Formatting.GRAY), false);
+								} else {
+									lockDirection = null;
+									client.player.sendMessage(Text.translatable("text.rotationlocker.unlock").formatted(Formatting.WHITE), false);
+								}
+							}
 						}
+						if (!rotationLockKeyBinding.isPressed() && enableKey == false){
+							enableKey = true;
 						}
-				}
-				if (!rotationLockKeyBinding.isPressed() && enableKey == false){
-					enableKey = true;
-				}
 
-				PlayerEntity player = MinecraftClient.getInstance().player;
+						PlayerEntity player = MinecraftClient.getInstance().player;
 
-		if(player != null) {
+						if(player != null) {
 
-			if(lockDirection == Direction.UP && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getRegistryEntry()))) {
-				lockDirection = null;
-				client.player.sendMessage(Text.translatable("text.rotationlocker.invalidlock").formatted(Formatting.DARK_RED), false);
-			}
-			if(lockDirection == Direction.DOWN && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getRegistryEntry()))) {
-				lockDirection = null;
-				client.player.sendMessage(Text.translatable("text.rotationlocker.invalidlock").formatted(Formatting.DARK_RED), false);
-			}
+							if(lockDirection == Direction.UP && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getRegistryEntry()))) {
+								lockDirection = null;
+								client.player.sendMessage(Text.translatable("text.rotationlocker.invalidlock").formatted(Formatting.DARK_RED), false);
+							}
+							if(lockDirection == Direction.DOWN && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getRegistryEntry()))) {
+								lockDirection = null;
+								client.player.sendMessage(Text.translatable("text.rotationlocker.invalidlock").formatted(Formatting.DARK_RED), false);
+							}
+						}
 					}
 				}
-			}
 		);
 	}
 }
