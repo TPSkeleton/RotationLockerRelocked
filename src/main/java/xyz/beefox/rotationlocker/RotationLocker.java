@@ -1,21 +1,21 @@
 package xyz.beefox.rotationlocker;
 
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
-import net.minecraft.item.Item;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.Direction;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,15 +24,15 @@ import org.slf4j.LoggerFactory;
 
 public class RotationLocker implements ModInitializer {
 
-	public static final TagKey<Item> LOCK_RESETERS = TagKey.of(
-			RegistryKeys.ITEM,
-			Identifier.of("rotationlocker", "lock_reseters")
+	public static final TagKey<Item> LOCK_RESETERS = TagKey.create(
+			Registries.ITEM,
+			Identifier.fromNamespaceAndPath("rotationlocker", "lock_reseters")
 	);
 
 	public static final String MOD_ID = "rotationlocker";
 	public static final Logger LOGGER = LoggerFactory.getLogger("rotationlocker");
 
-	private static KeyBinding rotationLockKeyBinding;
+	private static KeyMapping rotationLockKeyBinding;
 	@Nullable
 	public static Direction lockDirection;
 	private static Boolean enableKey;
@@ -40,45 +40,45 @@ public class RotationLocker implements ModInitializer {
 	@Override
 	public void onInitialize() {
 
-		rotationLockKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+		rotationLockKeyBinding = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.rotationlocker.lock",
-				InputUtil.Type.KEYSYM,
+				InputConstants.Type.KEYSYM,
 				GLFW.GLFW_KEY_K,
-				KeyBinding.Category.create(Identifier.of(MOD_ID))));
+				KeyMapping.Category.register(Identifier.parse(MOD_ID))));
 
 		enableKey = true;
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 					if(client.player != null) {
-						if (rotationLockKeyBinding.isPressed() && enableKey == true) {
+						if (rotationLockKeyBinding.isDown() && enableKey == true) {
 							enableKey = false;
 							if(lockDirection == null){
-								lockDirection = Direction.getEntityFacingOrder(client.player)[0];
-								client.player.sendMessage(Text.translatable("text.rotationlocker.lock", lockDirection.asString()).formatted(Formatting.WHITE), false);
+								lockDirection = Direction.orderedByNearest(client.player)[0];
+								client.player.displayClientMessage(Component.translatable("text.rotationlocker.lock", lockDirection.getSerializedName()).withStyle(ChatFormatting.WHITE), false);
 							} else {
-								if(client.options.sneakKey.isPressed()){
+								if(client.options.keyShift.isDown()){
 									lockDirection = lockDirection.getOpposite();
-									client.player.sendMessage(Text.translatable("text.rotationlocker.flip", lockDirection.asString()).formatted(Formatting.GRAY), false);
+									client.player.displayClientMessage(Component.translatable("text.rotationlocker.flip", lockDirection.getSerializedName()).withStyle(ChatFormatting.GRAY), false);
 								} else {
 									lockDirection = null;
-									client.player.sendMessage(Text.translatable("text.rotationlocker.unlock").formatted(Formatting.WHITE), false);
+									client.player.displayClientMessage(Component.translatable("text.rotationlocker.unlock").withStyle(ChatFormatting.WHITE), false);
 								}
 							}
 						}
-						if (!rotationLockKeyBinding.isPressed() && enableKey == false){
+						if (!rotationLockKeyBinding.isDown() && enableKey == false){
 							enableKey = true;
 						}
 
-						PlayerEntity player = MinecraftClient.getInstance().player;
+						Player player = Minecraft.getInstance().player;
 
 						if(player != null) {
 
-							if(lockDirection == Direction.UP && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getRegistryEntry()))) {
+							if(lockDirection == Direction.UP && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getItemHolder()))) {
 								lockDirection = null;
-								client.player.sendMessage(Text.translatable("text.rotationlocker.invalidlock").formatted(Formatting.DARK_RED), false);
+								client.player.displayClientMessage(Component.translatable("text.rotationlocker.invalidlock").withStyle(ChatFormatting.DARK_RED), false);
 							}
-							if(lockDirection == Direction.DOWN && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getRegistryEntry()))) {
+							if(lockDirection == Direction.DOWN && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getItemHolder()))) {
 								lockDirection = null;
-								client.player.sendMessage(Text.translatable("text.rotationlocker.invalidlock").formatted(Formatting.DARK_RED), false);
+								client.player.displayClientMessage(Component.translatable("text.rotationlocker.invalidlock").withStyle(ChatFormatting.DARK_RED), false);
 							}
 						}
 					}
