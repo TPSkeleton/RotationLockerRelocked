@@ -29,6 +29,7 @@ public class RotationLocker implements ModInitializer {
 			Identifier.of("rotationlocker", "lock_reseters")
 	);
 
+	public static final String MOD_ID = "rotationlocker";
 	public static final Logger LOGGER = LoggerFactory.getLogger("rotationlocker");
 
 	private static KeyBinding rotationLockKeyBinding;
@@ -45,11 +46,11 @@ public class RotationLocker implements ModInitializer {
 			"key.rotationlocker.lock", // The translation key of the keybinding's name
 			InputUtil.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
 			GLFW.GLFW_KEY_K, // The keycode of the key
-				KeyBinding.Category.create(LOCKER)
-		);
+				KeyBinding.Category.create(Identifier.of(MOD_ID))
+		));
 				// "category.rotationlocker" // The translation key of the keybinding's category.
 
-		));
+		;
 
 		enableKey = true;
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {

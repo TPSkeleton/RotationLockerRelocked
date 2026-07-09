@@ -1,5 +1,5 @@
 {
-    "category.rotationlocker": "Rotation Locker",
+    "key.category.minecraft.rotationlocker": "Rotation Locker",
     "key.rotationlocker.lock": "Lock Rotation",
     "text.rotationlocker.lock": "Locked block rotation to %s.",
     "text.rotationlocker.flip": "Flipped block rotation lock to %s.",
