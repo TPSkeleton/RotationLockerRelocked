@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 import net.minecraft.item.Item;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import net.fabricmc.api.ModInitializer;
@@ -78,12 +79,12 @@ public class RotationLocker implements ModInitializer {
 
 		if(player != null) {
 
-			if(lockDirection == Direction.UP && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getRegistryEntry()))) {
+			if (lockDirection == Direction.UP && (ClientTags.isInWithLocalFallback(LOCK_RESETERS, player.getMainHandStack().getItem()) || ClientTags.isInWithLocalFallback(LOCK_RESETERS, player.getOffHandStack().getItem()))){
 				lockDirection = null;
 				client.player.sendMessage(Text.translatable("text.rotationlocker.invalidlock").formatted(Formatting.DARK_RED), false);
 			}
-			if(lockDirection == Direction.DOWN && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getRegistryEntry()))) {
-				lockDirection = null;
+			if(lockDirection == Direction.DOWN && (player.getMainHandStack().isIn(LOCK_RESETERS) || player.getOffHandStack().isIn(LOCK_RESETERS))) {
+				lockDirection = Direction.NORTH;
 				client.player.sendMessage(Text.translatable("text.rotationlocker.invalidlock").formatted(Formatting.DARK_RED), false);
 						}
 					}
