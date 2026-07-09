@@ -79,14 +79,14 @@ public class RotationLocker implements ModInitializer {
 
 		if(player != null) {
 
-			if (lockDirection == Direction.UP && (ClientTags.isInWithLocalFallback(LOCK_RESETERS, player.getMainHandStack().getItem()) || ClientTags.isInWithLocalFallback(LOCK_RESETERS, player.getOffHandStack().getItem()))){
+			if(lockDirection == Direction.UP && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getRegistryEntry()))) {
 				lockDirection = null;
 				client.player.sendMessage(Text.translatable("text.rotationlocker.invalidlock").formatted(Formatting.DARK_RED), false);
 			}
-			if(lockDirection == Direction.DOWN && (player.getMainHandStack().isIn(LOCK_RESETERS) || player.getOffHandStack().isIn(LOCK_RESETERS))) {
-				lockDirection = Direction.NORTH;
+			if(lockDirection == Direction.DOWN && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getRegistryEntry()))) {
+				lockDirection = null;
 				client.player.sendMessage(Text.translatable("text.rotationlocker.invalidlock").formatted(Formatting.DARK_RED), false);
-						}
+			}
 					}
 				}
 			}

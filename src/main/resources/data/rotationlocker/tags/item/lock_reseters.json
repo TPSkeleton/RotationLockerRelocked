@@ -8,6 +8,9 @@
     "#minecraft:anvil",
     "#minecraft:buttons",
     "#minecraft:stairs",
+    "#minecraft:copper_chests",
+    "#minecraft:copper_golem_statues",
+    "#minecraft:wooden_shelves",
     "minecraft:campfire",
     "minecraft:soul_campfire",
     "minecraft:bell",
@@ -34,6 +37,11 @@
     "minecraft:pink_petals",
     "minecraft:decorated_pot",
     "minecraft:calibrated_sculk_sensor",
-    "minecraft:chiseled_bookshelf"
+    "minecraft:chiseled_bookshelf",
+    "minecraft:crafter",
+    "minecraft:vault",
+    "minecraft:leaf_litter",
+    "minecraft:wildflowers",
+    "minecraft:dried_ghast"
   ]
 }
