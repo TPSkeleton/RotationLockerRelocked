@@ -1,6 +1,8 @@
 package xyz.beefox.rotationlocker;
 
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.item.Item;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
@@ -40,22 +42,22 @@ public class RotationLocker implements ModInitializer {
 	@Override
 	public void onInitialize() {
 
-		rotationLockKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+		rotationLockKeyBinding = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.rotationlocker.lock",
 				InputUtil.Type.KEYSYM,
 				GLFW.GLFW_KEY_K,
-				KeyBinding.Category.create(Identifier.of(MOD_ID))));
+				KeyMapping.Category.register(Identifier.of(MOD_ID))));
 
 		enableKey = true;
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if(client.player != null) {
-				if (rotationLockKeyBinding.isPressed() && enableKey == true) {
+				if (rotationLockKeyBinding.isDown() && enableKey == true) {
 					enableKey = false;
 					if(lockDirection == null){
 						lockDirection = Direction.getEntityFacingOrder(client.player)[0];
 						client.player.sendMessage(Text.translatable("text.rotationlocker.lock", lockDirection.asString()).formatted(Formatting.WHITE), false);
 					} else {
-						if(client.options.sneakKey.isPressed()){
+						if(client.options.keyShift.isDown()){
 							lockDirection = lockDirection.getOpposite();
 							client.player.sendMessage(Text.translatable("text.rotationlocker.flip", lockDirection.asString()).formatted(Formatting.GRAY), false);
 						} else {
