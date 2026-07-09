@@ -26,7 +26,7 @@ public class RotationLocker implements ModInitializer {
 
 	public static final TagKey<Item> LOCK_RESETERS = TagKey.of(
 			RegistryKeys.ITEM,
-			new Identifier("rotationlocker", "lock_reseters")
+			Identifier.of("rotationlocker", "lock_reseters")
 	);
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("rotationlocker");
@@ -45,7 +45,10 @@ public class RotationLocker implements ModInitializer {
 			"key.rotationlocker.lock", // The translation key of the keybinding's name
 			InputUtil.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
 			GLFW.GLFW_KEY_K, // The keycode of the key
-			"category.rotationlocker" // The translation key of the keybinding's category.
+				KeyBinding.Category.create(LOCKER)
+		);
+				// "category.rotationlocker" // The translation key of the keybinding's category.
+
 		));
 
 		enableKey = true;
@@ -59,7 +62,7 @@ public class RotationLocker implements ModInitializer {
 					} else {
 						if(client.options.sneakKey.isPressed()){
 							lockDirection = lockDirection.getOpposite();
-							client.player.sendMessage(Text.translatable("text.rotationlocker.flip", lockDirection.asString()).formatted(Formatting.GRAY));
+							client.player.sendMessage(Text.translatable("text.rotationlocker.flip", lockDirection.asString()).formatted(Formatting.GRAY), false);
 						} else {
 							lockDirection = null;
 							client.player.sendMessage(Text.translatable("text.rotationlocker.unlock").formatted(Formatting.WHITE), false);
