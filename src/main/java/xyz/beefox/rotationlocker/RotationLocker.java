@@ -40,8 +40,6 @@ public class RotationLocker implements ModInitializer {
 	@Override
 	public void onInitialize() {
 
-
-
 		rotationLockKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 				"key.rotationlocker.lock",
 				InputUtil.Type.KEYSYM,
