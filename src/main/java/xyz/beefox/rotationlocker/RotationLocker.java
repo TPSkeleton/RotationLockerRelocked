@@ -4,7 +4,6 @@ import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 import net.minecraft.item.Item;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import net.fabricmc.api.ModInitializer;
@@ -44,14 +43,10 @@ public class RotationLocker implements ModInitializer {
 
 
 		rotationLockKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-			"key.rotationlocker.lock", // The translation key of the keybinding's name
-			InputUtil.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
-			GLFW.GLFW_KEY_K, // The keycode of the key
-				KeyBinding.Category.create(Identifier.of(MOD_ID))
-		));
-				// "category.rotationlocker" // The translation key of the keybinding's category.
-
-		;
+				"key.rotationlocker.lock",
+				InputUtil.Type.KEYSYM,
+				GLFW.GLFW_KEY_K,
+				KeyBinding.Category.create(Identifier.of(MOD_ID))));
 
 		enableKey = true;
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
