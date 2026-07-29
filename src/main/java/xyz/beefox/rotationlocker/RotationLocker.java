@@ -91,7 +91,7 @@ public class RotationLocker implements ModInitializer {
 			if (lockDirection == Direction.DOWN && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getRegistryEntry())) ||
 					lockDirection == Direction.UP && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getRegistryEntry()))) {
 						lockDirection = null;
-						// client.player.sendMessage(Text.literal("LOG TEXT 1").formatted(Formatting.DARK_RED), false);
+						// a
 				}
 			}
 		);
