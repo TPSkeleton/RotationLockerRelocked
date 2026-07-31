@@ -5,10 +5,12 @@ import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -48,39 +50,52 @@ public class RotationLocker implements ModInitializer {
 
 		enableKey = true;
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+
+					Player player = Minecraft.getInstance().player;
+
+					if(player != null) {
+						if (player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getItem().builtInRegistryHolder()))  &&
+								rotationLockKeyBinding.isDown() && enableKey == true) {
+							if (Direction.orderedByNearest(client.player)[0] == Direction.DOWN ||
+									Direction.orderedByNearest(client.player)[0] == Direction.UP) {
+								enableKey = false;
+								lockDirection = null;
+								client.player.sendSystemMessage(Component.translatable("text.rotationlocker.invalidlock").withStyle(ChatFormatting.DARK_RED));
+								Minecraft.getInstance().getSoundManager().play(
+										SimpleSoundInstance.forUI(SoundEvents.WOODEN_BUTTON_CLICK_ON, 0.2F, 1.2F));
+							}
+						}
+					}
 					if(client.player != null) {
 						if (rotationLockKeyBinding.isDown() && enableKey == true) {
 							enableKey = false;
 							if(lockDirection == null){
 								lockDirection = Direction.orderedByNearest(client.player)[0];
 								client.player.sendSystemMessage(Component.translatable("text.rotationlocker.lock", lockDirection.getSerializedName()).withStyle(ChatFormatting.WHITE));
+								Minecraft.getInstance().getSoundManager().play(
+										SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK.value(), 1.0F, 0.2F));
 							} else {
 								if(client.options.keyShift.isDown()){
 									lockDirection = lockDirection.getOpposite();
 									client.player.sendSystemMessage(Component.translatable("text.rotationlocker.flip", lockDirection.getSerializedName()).withStyle(ChatFormatting.GRAY));
+									Minecraft.getInstance().getSoundManager().play(
+											SimpleSoundInstance.forUI(SoundEvents.UI_TOAST_IN, 0.75F, 6.0F));
 								} else {
 									lockDirection = null;
 									client.player.sendSystemMessage(Component.translatable("text.rotationlocker.unlock").withStyle(ChatFormatting.WHITE));
+									Minecraft.getInstance().getSoundManager().play(
+											SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK.value(), 0.65F, 0.15F));
 								}
 							}
 						}
 						if (!rotationLockKeyBinding.isDown() && enableKey == false){
 							enableKey = true;
 						}
-
-						Player player = Minecraft.getInstance().player;
-
-						if(player != null) {
-
-							if(lockDirection == Direction.UP && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getItem().builtInRegistryHolder()))) {
-								lockDirection = null;
-								client.player.sendSystemMessage(Component.translatable("text.rotationlocker.invalidlock").withStyle(ChatFormatting.DARK_RED));
-							}
-							if(lockDirection == Direction.DOWN && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getItem().builtInRegistryHolder()))) {
-								lockDirection = null;
-								client.player.sendSystemMessage(Component.translatable("text.rotationlocker.invalidlock").withStyle(ChatFormatting.DARK_RED));
-							}
-						}
+					}
+					if (lockDirection == Direction.DOWN && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getItem().builtInRegistryHolder())) ||
+							lockDirection == Direction.UP && player.isHolding(stack -> ClientTags.isInWithLocalFallback(LOCK_RESETERS, stack.getItem().builtInRegistryHolder()))) {
+						lockDirection = null;
+						// a
 					}
 				}
 		);
