@@ -1,12 +1,10 @@
 package xyz.beefox.rotationlocker;
 
 import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
-import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.item.Item;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
