@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,8 +41,8 @@ public class RotationLocker implements ModInitializer {
 
 		rotationLockKeyBinding = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.rotationlocker.lock",
-				InputConstants.Type.KEYSYM,
-				GLFW.GLFW_KEY_K,
+				InputConstants.Type.KEYBOARD,
+				14,
 				KeyMapping.Category.register(Identifier.parse(MOD_ID))));
 
 		enableKey = true;
