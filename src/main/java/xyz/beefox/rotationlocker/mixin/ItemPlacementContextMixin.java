@@ -10,7 +10,7 @@ import xyz.beefox.rotationlocker.RotationLocker;
 
 @Mixin(BlockPlaceContext.class)
 public class ItemPlacementContextMixin{
-    
+
     @Inject(method = "getNearestLookingDirection()Lnet/minecraft/core/Direction;", at = @At("TAIL"), cancellable = true)
     public void getPlayerLookDirectionInject(CallbackInfoReturnable<Direction> info){
         Direction lockDirection = RotationLocker.lockDirection;
@@ -28,7 +28,6 @@ public class ItemPlacementContextMixin{
             } else {
                 info.setReturnValue(Direction.UP);
             }
-        }        
+        }
     }
 }
-

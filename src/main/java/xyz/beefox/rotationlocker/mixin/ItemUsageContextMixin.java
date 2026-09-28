@@ -19,18 +19,18 @@ import xyz.beefox.rotationlocker.RotationLocker;
 
 @Mixin(UseOnContext.class)
 public class ItemUsageContextMixin {
-	
+
 	@Shadow @Mutable @Final private BlockHitResult hitResult;
 	@Shadow @Mutable @Final private Player player;
 
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void constructorInjector(Player player, InteractionHand hand, BlockHitResult blockHit, CallbackInfo info){
-		
+
 		Direction lockDirection = RotationLocker.lockDirection;
 		if(lockDirection != null){
 			BlockPos newBlockPos = blockHit.getBlockPos().relative(blockHit.getDirection());
-			this.hitResult = blockHit.withDirection(lockDirection).withPosition(newBlockPos);	
+			this.hitResult = blockHit.withDirection(lockDirection).withPosition(newBlockPos);
 		}
 	}
 
