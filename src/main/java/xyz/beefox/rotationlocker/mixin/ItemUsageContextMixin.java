@@ -48,7 +48,7 @@ public class ItemUsageContextMixin {
 
 		if (lockDirection != null) {
 			if (lockDirection.getAxis().isVertical() && player != null) {
-				info.setReturnValue(player.getHorizontalFacing().getOpposite());
+				info.setReturnValue(player.getHorizontalFacing());
 			} else {
 				info.setReturnValue(lockDirection.getOpposite());
 			}
