@@ -19,14 +19,22 @@ public class ItemPlacementContextMixin{
         }
     }
 
-    @Inject(method = "getVerticalPlayerLookDirection()Lnet/minecraft/util/math/Direction;", at = @At("TAIL"), cancellable = true)
-    public void getVerticalPlayerLookDirection(CallbackInfoReturnable<Direction> info){
+    @Inject(method = "getPlacementDirections()[Lnet/minecraft/util/math/Direction;", at = @At("HEAD"), cancellable = true)
+    public void getVerticalPlayerLookDirection(CallbackInfoReturnable<Direction[]> info) {
         Direction lockDirection = RotationLocker.lockDirection;
-        if(lockDirection != null){
-            if(lockDirection == Direction.DOWN){
-                info.setReturnValue(Direction.DOWN);
-            } else {
-                info.setReturnValue(Direction.UP);
+        if (lockDirection != null) {
+            if (lockDirection == Direction.DOWN || lockDirection == Direction.UP) {
+                info.setReturnValue(new Direction[]{
+                                lockDirection,
+                                lockDirection.getOpposite(),
+                                Direction.UP,
+                                Direction.DOWN,
+                                Direction.NORTH,
+                                Direction.SOUTH,
+                                Direction.WEST,
+                                Direction.EAST
+                        }
+                        );
             }
         }
     }
