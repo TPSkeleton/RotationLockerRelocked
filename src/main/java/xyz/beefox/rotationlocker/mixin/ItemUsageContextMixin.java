@@ -19,29 +19,39 @@ import xyz.beefox.rotationlocker.RotationLocker;
 
 @Mixin(ItemUsageContext.class)
 public class ItemUsageContextMixin {
-	
-	@Shadow @Mutable @Final private BlockHitResult hit;
-	@Shadow @Mutable @Final private PlayerEntity player;
+
+	@Shadow
+	@Mutable
+	@Final
+	private BlockHitResult hit;
+	@Shadow
+	@Mutable
+	@Final
+	private PlayerEntity player;
 
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void constructorInjector(PlayerEntity player, Hand hand, BlockHitResult blockHit, CallbackInfo info){
-		
+	private void constructorInjector(PlayerEntity player, Hand hand, BlockHitResult blockHit, CallbackInfo info) {
+
 		Direction lockDirection = RotationLocker.lockDirection;
-		if(lockDirection != null){
+		if (lockDirection != null) {
 			BlockPos newBlockPos = blockHit.getBlockPos().offset(blockHit.getSide());
-			this.hit = blockHit.withSide(lockDirection).withBlockPos(newBlockPos);	
+			this.hit = blockHit.withSide(lockDirection).withBlockPos(newBlockPos);
 		}
 	}
 
-	@Inject(method = "getHorizontalPlayerFacing", at = @At("TAIL"), cancellable = true)
-	public void facingInjector(CallbackInfoReturnable<Direction> info){
+	@Inject(method = "getPlayerFacing", at = @At("TAIL"), cancellable = true)
+	public void facingInjector(CallbackInfoReturnable<Direction> info) {
 
 		@Nullable
 		Direction lockDirection = RotationLocker.lockDirection;
 
-		if(lockDirection != null){
-			info.setReturnValue(lockDirection.getOpposite());
+		if (lockDirection != null) {
+			if (lockDirection.getAxis().isVertical() && player != null) {
+				info.setReturnValue(player.getHorizontalFacing().getOpposite());
+			} else {
+				info.setReturnValue(lockDirection.getOpposite());
+			}
 		}
 	}
 }
